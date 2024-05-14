@@ -14,9 +14,11 @@ import java.util.List;
 public class ViajesManager {
 
     private List<Viaje> viajes;
+    private int codigoSiguiente;
 
     public ViajesManager() {
         this.viajes = new ArrayList<>();
+        this.codigoSiguiente =1;
         init();
     }
 
@@ -25,7 +27,9 @@ public class ViajesManager {
      * @param viaje
      */
     public void add(Viaje viaje) {
-        throw new UnsupportedOperationException("Por implementar");
+        viaje.setCodigo(codigoSiguiente);
+        viajes.add(viaje);
+        this.codigoSiguiente++;
     }
     
     /**

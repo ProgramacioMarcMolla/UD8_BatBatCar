@@ -41,16 +41,17 @@ public class ListadoViajesView {
     }
 
     public void visualizar() {
-        System.out.println(buildASCIITable().render(ANCHO_TABLA));
+        GestorIO.print(buildASCIITable().render(ANCHO_TABLA));
     }
 
     private void generarFilasViajes(AsciiTable tabla) {
+        for (Viaje viaje : this.viajes) {
+        // Agregar una fila para cada viaje
+        tabla.addRow(viaje.getCodigo(), null, viaje.getRuta(), viaje.getPrecio(), viaje.getUsernamePropietario(), viaje.getTIPO(), viaje.getPlazasDisponibles(), viaje.getIsCancelado()? "Sí" : "No");
+        tabla.addRule(); // Agregar una línea divisoria entre filas
+    }
 
-        // Implementa este método usando un bucle que itere sobre la lista de viajes y mostrando uno por fila.
-        tabla.addRow(1, null, "Barcelona-Alicante", 45, "roberto1979", "Estándar", 3, "No");
-        tabla.addRule();
-        tabla.addRow(2, null, "Alcoy-Elche", 10, "sergio123", "Estándar", 5, "Sí");
-        tabla.addRule();
+     
     }
 
 }
