@@ -47,7 +47,7 @@ public class ListadoViajesView {
     private void generarFilasViajes(AsciiTable tabla) {
         for (Viaje viaje : this.viajes) {
         // Agregar una fila para cada viaje
-        tabla.addRow(viaje.getCodigo(), null, viaje.getRuta(), viaje.getPrecio(), viaje.getUsernamePropietario(), viaje.getTIPO(), viaje.getPlazasDisponibles(), viaje.getIsCancelado()? "Sí" : "No");
+        tabla.addRow(viaje.getCodigo(), null, viaje.getRuta(), viaje.getPrecio(), (String)viaje.getUsernamePropietario(), viaje.getTIPO(), viaje.getPlazasDisponibles(), viaje.getIsCancelado()? "Sí" : "No");
         tabla.addRule(); // Agregar una línea divisoria entre filas
     }
 

@@ -14,6 +14,12 @@ public class Reserva {
     private int codigo;
     private Usuario usuario;
     private int numeroPlazasSolicitadas;
+
+    public Reserva(int numReserva, Usuario usuario,int plazasSolicitadas) {
+        this.codigo = numReserva;
+        this.usuario = usuario;
+        this.numeroPlazasSolicitadas = plazasSolicitadas;
+    }
     
     
     
@@ -30,6 +36,17 @@ public class Reserva {
         return Objects.hash(codigo);
     }
     
+    public int getCodigo(){
+        return this.codigo;
+    }
+    
+    public String getNombreUsuario(){
+        return this.usuario.getNombre();
+    }
+    
+    public int getPlazasSolicitadas(){
+        return this.numeroPlazasSolicitadas;
+    }
     
     
 }

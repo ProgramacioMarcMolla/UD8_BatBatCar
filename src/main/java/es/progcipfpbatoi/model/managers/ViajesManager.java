@@ -1,7 +1,9 @@
 package es.progcipfpbatoi.model.managers;
 
+import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.types.Viaje;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,8 +38,20 @@ public class ViajesManager {
      * Cancela un viaje
      * @param viaje
      */
-    public void cancel(Viaje viaje){
-        throw new UnsupportedOperationException("Por implementar");
+    public List<Viaje> cancel(Viaje viaje){
+        int index = 0;
+        
+        for (int i = 0; i < this.viajes.size(); i++){
+            if(viaje.equals(this.viajes.get(i))) index = i;
+        }
+
+        if (index != -1) {
+            
+            viaje.setIsCancelado(true);
+
+            viajes.set(index, viaje);
+        }
+        return viajes;
     }
 
     /**
@@ -59,5 +73,13 @@ public class ViajesManager {
     private void init() {
         // añade a la colección "viajes" todos los viajes que creas necesario tener de inicio en tu sistema
         // this.add(new Viaje(....));
+    }
+    
+    public void setViajes(List<Viaje> viajes){
+        this.viajes = viajes;
+    }
+    
+    public void anyadirReserva(Viaje viaje,Reserva reserva){
+        viaje.anyadirReserva(reserva);
     }
 }

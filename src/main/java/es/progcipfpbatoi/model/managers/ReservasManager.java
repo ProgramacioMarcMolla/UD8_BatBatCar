@@ -5,20 +5,23 @@
 package es.progcipfpbatoi.model.managers;
 
 import es.progcipfpbatoi.model.entities.Reserva;
-import java.util.HashSet;
+import es.progcipfpbatoi.model.entities.Usuario;
 
 /**
  *
  * @author mark
  */
-public class ReservaManager {
+public class ReservasManager {
     private int numReserva;
-    private HashSet<Reserva> reservas; 
     
-    public ReservaManager(){
-        this.reservas = new HashSet<>();
-        this.numReserva = 0;
+    public ReservasManager(){
+        this.numReserva = 1;
     }
     
+    public Reserva crearReserva(Usuario usuario, int plazasSolicitadas){
+        Reserva reserva = new Reserva(this.numReserva,usuario,plazasSolicitadas);
+        this.numReserva++;
+        return reserva;
+    }
     
 }

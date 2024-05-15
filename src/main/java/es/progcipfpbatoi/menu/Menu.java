@@ -1,6 +1,5 @@
 package es.progcipfpbatoi.menu;
 
-import es.progcipfpbatoi.controller.ReservasController;
 import es.progcipfpbatoi.controller.ViajesController;
 import es.progcipfpbatoi.views.GestorIO;
 
@@ -14,7 +13,6 @@ public class Menu {
     private static final int OPCION_SALIR = 9;
 
     private ViajesController viajesController;
-    private ReservasController reservasController;
 
     public Menu() {
         this.viajesController = new ViajesController();
@@ -41,7 +39,7 @@ public class Menu {
     }
 
     private void mostrarOpciones() {
-        GestorIO.print("1) Establecer usuario (login) \n"
+        GestorIO.print("\n1) Establecer usuario (login) \n"
                 + "2) Listar todos los viajes\n"
                 + "3) Añadir viaje\n"
                 + "4) Cancelar viaje\n"
@@ -49,7 +47,7 @@ public class Menu {
                 + "6) Modificar reserva\n"
                 + "7) Cancelar reserva\n"
                 + "8) Buscar viaje y realizar reserva\n"
-                + "9) Salir");
+                + "9) Salir\n");
     }
 
     private int solicitarOpcion() {
@@ -62,15 +60,11 @@ public class Menu {
         
         
         switch (opcionSeleccionada) {
-            case 1 ->{
-                viajesController.logearUsuario();
-                
-                
-        }
+            case 1 ->viajesController.logearUsuario();
             case 2 -> viajesController.listarViajes();
             case 3 -> viajesController.anyadirViaje();
-            case 4 -> viajesController.listarViajes();
-            case 5 -> viajesController.listarViajes();
+            case 4 -> viajesController.cancelarViaje();
+            case 5 -> viajesController.realizarReserva();
             case 6 -> viajesController.listarViajes();
             case 7 -> viajesController.listarViajes();
             case 8 -> viajesController.listarViajes();

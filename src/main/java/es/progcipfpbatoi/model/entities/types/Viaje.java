@@ -77,6 +77,38 @@ public class Viaje {
         return this.plazasOfertadas-this.plazasReservadas;
     }
     
+    public void setIsCancelado(boolean isCancelado){
+        this.isCancelado = isCancelado;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Viaje viaje = (Viaje) obj;
+        return codigo == viaje.codigo;
+    }
+    
+    public boolean getIsCerrado(){
+        return this.isCerrado;
+    }
+
+    public void anyadirReserva(Reserva reserva) {
+        this.reservas.add(reserva);
+        
+        this.plazasReservadas += reserva.getPlazasSolicitadas();
+        
+        if(this.plazasReservadas == this.plazasOfertadas){
+            this.isCerrado = true;
+        }
+        
+    }
+
+
     
     
 }
