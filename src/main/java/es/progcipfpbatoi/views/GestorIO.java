@@ -1,12 +1,8 @@
 package es.progcipfpbatoi.views;
 
 /**
- * IMPORTANTE: Esta clase está dedicada para la entrada información por parte
- * del usuario. No se debe declarar un objeto "Scanner" en ninguna otra parte
- * del código. Siempre que quieras solicitar un dato, haz uso de uno de los 
- * métodos aquí establecidos (puedes añadir nuevos, si lo crees conveniente).
+ * IMPORTANTE: Esta clase está dedicada para la entrada información por parte del usuario. No se debe declarar un objeto "Scanner" en ninguna otra parte del código. Siempre que quieras solicitar un dato, haz uso de uno de los métodos aquí establecidos (puedes añadir nuevos, si lo crees conveniente).
  */
-
 import java.util.Scanner;
 
 public class GestorIO {
@@ -19,7 +15,7 @@ public class GestorIO {
 
     public static int getInt(String mensaje) {
         do {
-            System.out.print(mensaje+": ");
+            System.out.print(mensaje + ": ");
             if (scanner.hasNextInt()) {
                 return scanner.nextInt();
             }
@@ -27,9 +23,11 @@ public class GestorIO {
             scanner.next();
         } while (true);
     }
-    
-    public static int getInt(String mensaje, int min, int max) {
-         do {
+
+    public static int getInt(String mensaje,
+            int min,
+            int max) {
+        do {
             int numero = getInt(mensaje);
             if (numero >= min && numero <= max) {
                 return numero;
@@ -40,7 +38,7 @@ public class GestorIO {
 
     public static float getFloat(String mensaje) {
         do {
-            System.out.print(mensaje+": ");
+            System.out.print(mensaje + ": ");
             if (scanner.hasNextFloat()) {
                 return scanner.nextFloat();
             }
@@ -52,6 +50,25 @@ public class GestorIO {
     public static String getString(String mensaje) {
         System.out.print(mensaje + ": ");
         return scanner.next();
+    }
+
+    public static String getStringRuta(String mensaje) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        boolean valido = false;
+
+        do {
+            System.out.print(mensaje + ": ");
+            input = scanner.nextLine();
+
+            if (input.matches("^\\w+(-\\w+)+$")) { 
+                valido = true;
+            } else {
+                System.out.println("La entrada no cumple con la estructura requerida. Inténtalo de nuevo.");
+            }
+        } while (!valido);
+
+        return input;
     }
 
     public static boolean confirmar(String mensaje) {
@@ -67,8 +84,9 @@ public class GestorIO {
             System.out.println("¡Error! Debe introducir S o N");
         } while (true);
     }
-    
+
     public static void print(String mensaje) {
         System.out.println(mensaje);
     }
+
 }

@@ -97,4 +97,19 @@ public class ViajesManager {
             }
         }
     }
+    
+    public void eliminarReserva(int codigoViajeValido,int codigoReservaValido) {
+        for(int i = 0; i < this.viajes.size(); i++){
+            if(this.viajes.get(i).getCodigo() == codigoViajeValido){
+                for(int j = 0 ; j < this.viajes.get(i).getReservas().size();j++){
+                    if(this.viajes.get(i).getReservas().get(j).getCodigo() == codigoReservaValido){
+                        int plazasPedidasOriginalmente = this.viajes.get(i).getReservas().get(j).getPlazasSolicitadas();
+                        this.viajes.get(i).anyadirPlazasReservadas(0-plazasPedidasOriginalmente);
+                        this.viajes.get(i).getReservas().remove(j);
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
