@@ -65,7 +65,7 @@ public class Menu {
             case 3 -> viajesController.anyadirViaje();
             case 4 -> viajesController.cancelarViaje();
             case 5 -> viajesController.realizarReserva();
-            case 6 -> viajesController.listarViajes();
+            case 6 -> viajesController.modificarReserva();
             case 7 -> viajesController.listarViajes();
             case 8 -> viajesController.listarViajes();
             case OPCION_SALIR -> GestorIO.print("Hasta la pronto.");

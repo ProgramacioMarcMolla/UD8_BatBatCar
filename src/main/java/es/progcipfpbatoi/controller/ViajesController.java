@@ -3,6 +3,9 @@ package es.progcipfpbatoi.controller;
 import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.model.entities.types.Viaje;
+import es.progcipfpbatoi.model.entities.types.ViajeCancelable;
+import es.progcipfpbatoi.model.entities.types.ViajeExclusivo;
+import es.progcipfpbatoi.model.entities.types.ViajeFlexible;
 import es.progcipfpbatoi.model.managers.ReservasManager;
 import es.progcipfpbatoi.model.managers.UsuariosManager;
 import es.progcipfpbatoi.model.managers.ViajesManager;
@@ -10,6 +13,7 @@ import es.progcipfpbatoi.views.GestorIO;
 import es.progcipfpbatoi.views.ListadoReservasView;
 import es.progcipfpbatoi.views.ListadoViajesView;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ViajesController {
@@ -60,10 +64,31 @@ public class ViajesController {
         int plazasDisponibles = GestorIO.getInt("Introduzca el número de plazas disponibles");
 
         GestorIO.print(this.usuario.getNombre());
+        
+        
+        switch (tipo) {
+            case 1 ->this.viajesManager.add(new Viaje(usuario, ruta, duracion, plazasDisponibles, precio)) ;
+            case 2 -> this.viajesManager.add(new ViajeCancelable(usuario, ruta, duracion, plazasDisponibles, precio));
+            case 3 -> this.viajesManager.add(new ViajeExclusivo(usuario, ruta, duracion, plazasDisponibles, precio));
+            case 4 -> this.viajesManager.add(new ViajeFlexible(usuario, ruta, duracion, plazasDisponibles, precio));
+        }
 
-        Viaje viaje = new Viaje(usuario, ruta, duracion, plazasDisponibles, precio);
-        this.viajesManager.add(viaje);
-        GestorIO.print(viaje + "añadido con éxito");
+        
+        Viaje ultimoViaje = viajesManager.findAll().get(viajesManager.findAll().size() - 1);
+
+if (ultimoViaje instanceof ViajeFlexible) {
+    ViajeFlexible viajeFlexible = (ViajeFlexible) ultimoViaje;
+    GestorIO.print(viajeFlexible.toString() + " añadido con éxito");
+} else if (ultimoViaje instanceof ViajeCancelable) {
+    ViajeCancelable viajeCancelable = (ViajeCancelable) ultimoViaje;
+    GestorIO.print(viajeCancelable.toString() + " añadido con éxito");
+} else if (ultimoViaje instanceof ViajeExclusivo) {
+    ViajeExclusivo viajeExclusivo = (ViajeExclusivo) ultimoViaje;
+    GestorIO.print(viajeExclusivo.toString() + " añadido con éxito");
+} else {
+    // Si ninguna de las subclases coincide, se puede manejar como un Viaje genérico
+    GestorIO.print(ultimoViaje.toString() + " añadido con éxito");
+}
     }
 
     public void logearUsuario() {
@@ -184,7 +209,6 @@ public class ViajesController {
             return;
         }
         
-        boolean isCodigoValido = false;
         int indiceViaje = -1; 
         Viaje viaje = null;
 
@@ -211,7 +235,82 @@ public class ViajesController {
         GestorIO.print("Reserva realizada con éxito. A continuación se mostrará el ticket de confirmación.");
         this.viajesManager.anyadirReserva(viaje, reserva);
         
-        (new ListadoReservasView(reserva)).visualizar();
+        (new ListadoReservasView(reserva)).visualizarReserva();
+    }
+    
+    public void modificarReserva(){
+        if (this.usuario == null) {
+            GestorIO.print("No se ha iniciado sesión");
+            return;
+        }
+
+        List<Viaje> viajesDelUsuario = new ArrayList<>(this.viajesManager.findAll());
+        
+        for (int i = viajesDelUsuario.size() - 1; i >= 0; i--) {
+            if (viajesDelUsuario.get(i).getUsuario().equals(this.usuario)) {
+                viajesDelUsuario.remove(i);
+            }
+            
+        }
+        for (int i = viajesDelUsuario.size() - 1; i >= 0; i--) {
+            if (!(viajesDelUsuario.get(i) instanceof ViajeFlexible)) {
+                viajesDelUsuario.remove(i);
+            }
+            
+        }
+        
+        for (int i = viajesDelUsuario.size() - 1; i >= 0; i--) {
+            if ((viajesDelUsuario.get(i).getIsCancelado())) {
+                viajesDelUsuario.remove(i);
+            }
+            
+        }
+        
+        
+        
+        (new ListadoViajesView(viajesDelUsuario)).visualizarReservasViajes();
+        
+        if (viajesDelUsuario.isEmpty()) {
+            GestorIO.print("No existen reservas modificables");
+            return;
+        }
+        
+        boolean isCodigoValido = false;
+        int indiceViaje = -1; 
+        Viaje viaje = null;
+        int codigoReservaValido = -1;
+        int codigoViajeValido = -1;
+        int nuevasPlazasReservar = 0;
+
+        while (indiceViaje == -1) {
+            int codigoReservaModificar = GestorIO.getInt("Introduzca el código de la reserva a modificar");
+
+            for (int i = 0; i < viajesDelUsuario.size(); i++) {
+                viaje = viajesDelUsuario.get(i);
+                for(int j = 0; j < viaje.getReservas().size(); j++){
+                    if(viaje.getReservas().get(j).getCodigo() == codigoReservaModificar){
+                        codigoViajeValido = viaje.getCodigo();
+                        codigoReservaValido = codigoReservaModificar;
+                        indiceViaje = i; 
+                        System.out.println("plazas disponibles"+viajesDelUsuario.get(indiceViaje).getPlazasDisponibles()+viaje.getReservas().get(j).getPlazasSolicitadas());
+                        nuevasPlazasReservar = GestorIO.getInt("Introduzca el número de plazas a reservar", 1, viajesDelUsuario.get(indiceViaje).getPlazasDisponibles()+viaje.getReservas().get(j).getPlazasSolicitadas());
+                        isCodigoValido = true;
+                        break;
+                    }
+                }
+                if(isCodigoValido) break;
+                
+            }
+
+            if (indiceViaje == -1) {
+                GestorIO.print("El código ingresado no corresponde a una reserva. Por favor, inténtelo de nuevo.");
+            }
+        }
+        
+        this.viajesManager.modificarReserva(codigoViajeValido,codigoReservaValido,nuevasPlazasReservar);
+        
+        
+        
     }
 
 }

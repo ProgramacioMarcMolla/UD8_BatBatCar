@@ -17,6 +17,15 @@ public class ViajeCancelable extends Viaje{
     
     public ViajeCancelable(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
         super(propietario, ruta, duracion, plazasOfertadas, precio);
-        this.isCancelado = true;
+    }
+    
+    @Override
+    public String toString(){
+        return "Viaje de tipo " + TIPO + "del propietario " + this.propietario.getNombre() + "con código" + this.codigo + " y ruta " + ruta + " con " + plazasOfertadas + " plazas ofertadas ";
+    }
+    
+        @Override
+    public String getTIPO() {
+        return "Viaje "+TIPO;
     }
 }

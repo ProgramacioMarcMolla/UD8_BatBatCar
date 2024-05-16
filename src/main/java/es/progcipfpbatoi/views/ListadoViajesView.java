@@ -7,6 +7,7 @@ package es.progcipfpbatoi.views;
  */
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
+import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.types.Viaje;
 import java.util.List;
 
@@ -43,6 +44,10 @@ public class ListadoViajesView {
     public void visualizar() {
         GestorIO.print(buildASCIITable().render(ANCHO_TABLA));
     }
+    
+    public void visualizarReservasViajes() {
+        GestorIO.print(buildASCIITableReservaDeViajes().render(ANCHO_TABLA));
+    }
 
     private void generarFilasViajes(AsciiTable tabla) {
         for (Viaje viaje : this.viajes) {
@@ -51,7 +56,30 @@ public class ListadoViajesView {
         tabla.addRule(); // Agregar una línea divisoria entre filas
     }
 
-     
+    }
+    
+    private AsciiTable buildASCIITableReservaDeViajes() {
+
+        AsciiTable view = new AsciiTable();
+        view.addRule();
+        view.addRow("*", "*", "*", "*", "*");
+        view.addRule();
+        view.addRow(null, null, null, null, "Reservas de viajes");
+        view.addRule();
+        view.addRow("Cod. Reserva", "Cod. Viaje", "Propietario Viaje", null, "Plazas Reservadas");
+        view.addRule();
+        generarFilasReservasViajes(view);
+        view.setTextAlignment(TextAlignment.CENTER);
+        return view;
+    }
+
+    private void generarFilasReservasViajes(AsciiTable view) {
+        for (Viaje viaje : this.viajes){
+            for(Reserva reserva: viaje.getReservas()){
+                view.addRow(reserva.getCodigo(),viaje.getCodigo(), viaje.getUsernamePropietario(), null, reserva.getPlazasSolicitadas());
+                view.addRule();
+            }
+        }
     }
 
 }

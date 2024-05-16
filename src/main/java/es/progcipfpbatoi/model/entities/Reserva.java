@@ -48,5 +48,9 @@ public class Reserva {
         return this.numeroPlazasSolicitadas;
     }
     
+    public void setPlazasSolicitadas(int numPlazasSolicitadas){
+        this.numeroPlazasSolicitadas = numPlazasSolicitadas;
+    }
+    
     
 }

@@ -15,6 +15,7 @@ import java.util.List;
  * @author mark
  */
 public class ListadoReservasView {
+
     private final Reserva reserva;
 
     private static final int ANCHO_TABLA = 70;
@@ -23,7 +24,7 @@ public class ListadoReservasView {
         this.reserva = reserva;
     }
 
-    private AsciiTable buildASCIITable() {
+    private AsciiTable buildASCIITableReserva() {
 
         AsciiTable view = new AsciiTable();
         view.addRule();
@@ -31,7 +32,7 @@ public class ListadoReservasView {
         view.addRule();
         view.addRow(null, "Reserva con cógigo " + this.reserva.getCodigo());
         view.addRule();
-        view.addRow("Usuario",this.reserva.getNombreUsuario());
+        view.addRow("Usuario", this.reserva.getNombreUsuario());
         view.addRule();
         view.addRow("Plazas", this.reserva.getPlazasSolicitadas());
         view.addRule();
@@ -39,14 +40,17 @@ public class ListadoReservasView {
         return view;
     }
 
+    
+
     @Override
     public String toString() {
-        return buildASCIITable().render(ANCHO_TABLA);
+        return buildASCIITableReserva().render(ANCHO_TABLA);
     }
 
-    public void visualizar() {
-        GestorIO.print(buildASCIITable().render(ANCHO_TABLA));
+    public void visualizarReserva() {
+        GestorIO.print(buildASCIITableReserva().render(ANCHO_TABLA));
     }
+
     
-    
+
 }

@@ -2,6 +2,7 @@ package es.progcipfpbatoi.model.entities.types;
 
 import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /*
@@ -9,18 +10,18 @@ import java.util.HashSet;
 */
 
 public class Viaje {
-    private int codigo;
-    private Usuario propietario;
-    private String ruta;
-    private int duracion;
+    protected int codigo;
+    protected Usuario propietario;
+    protected String ruta;
+    protected int duracion;
     protected int plazasOfertadas;
     protected int plazasReservadas;
     protected double precio;
     protected boolean isCerrado;
     protected boolean isCancelado;
-    protected HashSet<Reserva> reservas;
+    protected ArrayList<Reserva> reservas;
     
-    private final String TIPO = "Estándar";
+    protected final String TIPO = "Estándar";
     
     public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
         this.propietario = propietario;
@@ -31,7 +32,7 @@ public class Viaje {
         this.precio = precio;
         this.isCerrado = false;
         this.isCancelado = false;
-        this.reservas = new HashSet<>();
+        this.reservas = new ArrayList<>();
     }
     
     public boolean getIsCancelado(){
@@ -107,8 +108,18 @@ public class Viaje {
         }
         
     }
-
-
+    
+    public ArrayList<Reserva> getReservas(){
+        return this.reservas;
+    }
+    
+    /**
+     * Si el nuevo numero de plazas es un numero negativo, ejemplo, de 3 plazas reservadas pasamos a 1, el parametro sera negativo. -2
+     * @param plazasReservadasAAnyadir 
+     */
+    public void anyadirPlazasReservadas(int plazasReservadasAAnyadir){
+        this.plazasReservadas += plazasReservadasAAnyadir;
+    }
     
     
 }

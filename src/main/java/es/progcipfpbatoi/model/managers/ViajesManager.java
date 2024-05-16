@@ -82,4 +82,19 @@ public class ViajesManager {
     public void anyadirReserva(Viaje viaje,Reserva reserva){
         viaje.anyadirReserva(reserva);
     }
+
+    public void modificarReserva(int codigoViajeValido,int codigoReservaValido,int nuevasPlazasReservar) {
+        for(int i = 0; i < this.viajes.size(); i++){
+            if(this.viajes.get(i).getCodigo() == codigoViajeValido){
+                for(int j = 0 ; j < this.viajes.get(i).getReservas().size();j++){
+                    if(this.viajes.get(i).getReservas().get(j).getCodigo() == codigoReservaValido){
+                        int plazasPedidasOriginalmente = this.viajes.get(i).getReservas().get(j).getPlazasSolicitadas();
+                        this.viajes.get(i).anyadirPlazasReservadas(nuevasPlazasReservar-plazasPedidasOriginalmente);
+                        this.viajes.get(i).getReservas().get(j).setPlazasSolicitadas(nuevasPlazasReservar);
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
