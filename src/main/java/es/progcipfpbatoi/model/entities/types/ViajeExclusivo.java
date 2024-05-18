@@ -4,7 +4,9 @@
  */
 package es.progcipfpbatoi.model.entities.types;
 
+import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
+import es.progcipfpbatoi.views.GestorIO;
 
 /**
  *
@@ -25,6 +27,25 @@ public class ViajeExclusivo extends Viaje {
     @Override
     public String getTIPO() {
         return "Viaje "+TIPO;
+    }
+    
+    @Override
+    public void anyadirReserva(Reserva reserva) {
+        
+        for(int i = 0; i < this.reservas.size(); i++){
+            if(reserva.getNombreUsuario().equals(this.reservas.get(i).getNombreUsuario())){
+                GestorIO.print("Un usuario no puede hacer más de una reserva.");
+                return;
+            }
+        }
+        
+        this.reservas.add(reserva);
+        
+        this.plazasReservadas += reserva.getPlazasSolicitadas();
+        
+       
+        this.isCerrado = true;
+
     }
 
 }

@@ -2,6 +2,7 @@ package es.progcipfpbatoi.model.entities.types;
 
 import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
+import es.progcipfpbatoi.views.GestorIO;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -99,6 +100,14 @@ public class Viaje {
     }
 
     public void anyadirReserva(Reserva reserva) {
+        
+        for(int i = 0; i < this.reservas.size(); i++){
+            if(reserva.getNombreUsuario().equals(this.reservas.get(i).getNombreUsuario())){
+                GestorIO.print("Un usuario no puede hacer más de una reserva.");
+                return;
+            }
+        }
+        
         this.reservas.add(reserva);
         
         this.plazasReservadas += reserva.getPlazasSolicitadas();
@@ -108,6 +117,8 @@ public class Viaje {
         }
         
     }
+    
+   
     
     public ArrayList<Reserva> getReservas(){
         return this.reservas;
@@ -119,6 +130,11 @@ public class Viaje {
      */
     public void anyadirPlazasReservadas(int plazasReservadasAAnyadir){
         this.plazasReservadas += plazasReservadasAAnyadir;
+        
+        if(this.plazasReservadas == this.plazasOfertadas){
+            this.isCerrado = true;
+        }
+        
     }
     
     

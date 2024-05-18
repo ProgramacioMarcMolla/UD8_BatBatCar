@@ -21,6 +21,7 @@ public class UsuariosManager {
         usuarios.put("marc", "1234");
         usuarios.put("ana", "1234");
         usuarios.put("manel", "1234");
+        usuarios.put("andrea", "medaigual");
     }
     
     public Usuario logearUsuario(String username, String password){
