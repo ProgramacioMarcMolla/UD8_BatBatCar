@@ -36,6 +36,8 @@ public class ListadoReservasView {
         view.addRule();
         view.addRow("Plazas", this.reserva.getPlazasSolicitadas());
         view.addRule();
+        view.addRow("Fecha", this.reserva.getFechaToString());
+        view.addRule();
         view.setTextAlignment(TextAlignment.CENTER);
         return view;
     }

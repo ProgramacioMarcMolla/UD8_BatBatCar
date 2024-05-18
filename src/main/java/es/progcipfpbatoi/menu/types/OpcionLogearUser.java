@@ -5,7 +5,9 @@
 package es.progcipfpbatoi.menu.types;
 
 import es.progcipfpbatoi.controller.ViajesController;
+import es.progcipfpbatoi.exceptions.MaximoIntentosAlcanzadosExcepcion;
 import es.progcipfpbatoi.menu.Opcion;
+import es.progcipfpbatoi.views.GestorIO;
 
 /**
  *
@@ -21,7 +23,11 @@ public class OpcionLogearUser extends Opcion {
 
     @Override
     public void ejecutar() {
-        this.viajesController.logearUsuario();
+        try{
+            this.viajesController.logearUsuario();
+        }catch(MaximoIntentosAlcanzadosExcepcion e){
+            GestorIO.print(e.getMessage());
+        }
     }
 
 }

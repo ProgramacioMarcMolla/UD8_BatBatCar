@@ -15,8 +15,8 @@ import es.progcipfpbatoi.views.GestorIO;
 public class ViajeExclusivo extends Viaje {
         private final String TIPO = "Exclusivo";
 
-    public ViajeExclusivo(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
-        super(propietario, ruta, duracion, plazasOfertadas, precio);
+    public ViajeExclusivo(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio,String fecha) {
+        super(propietario, ruta, duracion, plazasOfertadas, precio,fecha);
     }
     
     @Override

@@ -9,7 +9,7 @@ import es.progcipfpbatoi.views.GestorIO;
  * @author batoi
  */
 public class Menu {
-
+    /*
     private static final int OPCION_SALIR = 9;
 
     private ViajesController viajesController;
@@ -71,5 +71,6 @@ public class Menu {
             case OPCION_SALIR -> GestorIO.print("Hasta la pronto.");
         }
     }
+    */
 
 }

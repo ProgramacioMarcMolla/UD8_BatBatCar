@@ -15,8 +15,8 @@ public class ViajeCancelable extends Viaje{
         private final String TIPO = "Cancelable";
 
     
-    public ViajeCancelable(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
-        super(propietario, ruta, duracion, plazasOfertadas, precio);
+    public ViajeCancelable(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio, String fecha) {
+        super(propietario, ruta, duracion, plazasOfertadas, precio, fecha);
     }
     
     @Override

@@ -4,6 +4,7 @@
  */
 package es.progcipfpbatoi.model.managers;
 
+import es.progcipfpbatoi.exceptions.CredencialesInvalidasExcepcion;
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.views.GestorIO;
 import java.util.HashMap;
@@ -26,14 +27,19 @@ public class UsuariosManager {
     
     public Usuario logearUsuario(String username, String password){
         
-        
-        
-        if (usuarios.get(username) == null ? password == null : usuarios.get(username).equals(password)){
+        try{
+            if (usuarios.get(username) == null ? password == null : usuarios.get(username).equals(password)){
             return new Usuario(username,password);
         }
+           
         
-        GestorIO.print("Error, la contraseña introducida es érronea");
-        return null;
+        throw new CredencialesInvalidasExcepcion();
+        }catch (CredencialesInvalidasExcepcion e){
+            GestorIO.print(e.getMessage());
+            return null;
+        }
+        
+        
         
     }
     

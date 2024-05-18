@@ -4,6 +4,8 @@
  */
 package es.progcipfpbatoi.model.entities;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -14,13 +16,18 @@ public class Reserva {
     private int codigo;
     private Usuario usuario;
     private int numeroPlazasSolicitadas;
+    LocalDateTime fecha;
 
     public Reserva(int numReserva, Usuario usuario,int plazasSolicitadas) {
         this.codigo = numReserva;
         this.usuario = usuario;
         this.numeroPlazasSolicitadas = plazasSolicitadas;
+        this.fecha = LocalDateTime.now();
     }
-    
+    public String getFechaToString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy 'a las' HH:mm");
+        return this.fecha.format(formatter);
+    }
     
     
     @Override

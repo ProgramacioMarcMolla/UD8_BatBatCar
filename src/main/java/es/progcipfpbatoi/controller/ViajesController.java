@@ -1,5 +1,11 @@
 package es.progcipfpbatoi.controller;
 
+import es.progcipfpbatoi.exceptions.CredencialesInvalidasExcepcion;
+import es.progcipfpbatoi.exceptions.FechaPasadaException;
+import es.progcipfpbatoi.exceptions.MaximoIntentosAlcanzadosExcepcion;
+import es.progcipfpbatoi.exceptions.ReservaNoValidaException;
+import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
+import es.progcipfpbatoi.exceptions.ViajeNoValidoException;
 import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.model.entities.types.Viaje;
@@ -12,6 +18,9 @@ import es.progcipfpbatoi.model.managers.ViajesManager;
 import es.progcipfpbatoi.views.GestorIO;
 import es.progcipfpbatoi.views.ListadoReservasView;
 import es.progcipfpbatoi.views.ListadoViajesView;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,12 +53,12 @@ public class ViajesController {
 
     /**
      * Añade un viaje al sistema, preguntando previamente por toda la información necesaria para crearlo.
+     * @throws es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException
      */
-    public void anyadirViaje() {
+    public void anyadirViaje() throws UsuarioSinEstablecerException, FechaPasadaException{
 
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         int tipo = GestorIO.getInt("1- Viaje Estándar\n2- Viaje Cancelable\n3- Viaje Exclusivo\n4- Viaje Flexible\nSeleccioneel tipo de viaje");
@@ -62,16 +71,25 @@ public class ViajesController {
         float precio = GestorIO.getFloat("Introduzca el precio de cada plaza");
 
         int plazasDisponibles = GestorIO.getInt("Introduzca el número de plazas disponibles");
+        
+        String fecha = pedirYValidarFechaHora();
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime prueba = LocalDateTime.parse(fecha, formatter); 
+        
+        if(LocalDateTime.now().isAfter(prueba)){
+            throw new FechaPasadaException();
+        }
 
         switch (tipo) {
             case 1 ->
-                this.viajesManager.add(new Viaje(usuario, ruta, duracion, plazasDisponibles, precio));
+                this.viajesManager.add(new Viaje(usuario, ruta, duracion, plazasDisponibles, precio,fecha));
             case 2 ->
-                this.viajesManager.add(new ViajeCancelable(usuario, ruta, duracion, plazasDisponibles, precio));
+                this.viajesManager.add(new ViajeCancelable(usuario, ruta, duracion, plazasDisponibles, precio, fecha));
             case 3 ->
-                this.viajesManager.add(new ViajeExclusivo(usuario, ruta, duracion, plazasDisponibles, precio));
+                this.viajesManager.add(new ViajeExclusivo(usuario, ruta, duracion, plazasDisponibles, precio,fecha));
             case 4 ->
-                this.viajesManager.add(new ViajeFlexible(usuario, ruta, duracion, plazasDisponibles, precio));
+                this.viajesManager.add(new ViajeFlexible(usuario, ruta, duracion, plazasDisponibles, precio,fecha));
         }
 
         Viaje ultimoViaje = viajesManager.findAll().get(viajesManager.findAll().size() - 1);
@@ -91,27 +109,28 @@ public class ViajesController {
         }
     }
 
-    public void logearUsuario() {
+    public void logearUsuario() throws MaximoIntentosAlcanzadosExcepcion{
         int intentos = 0;
         while (intentos < 3) {
-            String nombre = GestorIO.getString("Username");
+            String nombre = GestorIO.getString("Username").trim();
             if (!(this.usuariosManager.usernameInUsuarios(nombre))) {
                 GestorIO.print("Error, el usuario introducido no existe");
                 intentos++;
                 continue;
             }
             String password = GestorIO.getString("Password");
+            
             this.usuario = this.usuariosManager.logearUsuario(nombre, password);
-
             if (this.usuario != null) {
                 break;
             } else {
                 intentos++;
             }
+        
         }
 
         if (this.usuario == null) {
-            System.out.println("Se ha alcanzado el número máximo de intentos. Adiós");
+            throw new MaximoIntentosAlcanzadosExcepcion();
         }
     }
 
@@ -119,11 +138,10 @@ public class ViajesController {
         return this.usuario;
     }
 
-    public void cancelarViaje() {
+    public void cancelarViaje() throws UsuarioSinEstablecerException, ViajeNoValidoException{
 
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         List<Viaje> viajesNoCancelados = new ArrayList<>(this.viajesManager.findAll());
@@ -164,7 +182,7 @@ public class ViajesController {
             }
 
             if (indiceEliminar == -1) {
-                GestorIO.print("El código ingresado no corresponde a un viaje existente. Por favor, inténtelo de nuevo.");
+                throw new ViajeNoValidoException();
             }
         }
 
@@ -173,10 +191,9 @@ public class ViajesController {
 
     }
 
-    public void realizarReserva() {
+    public void realizarReserva() throws UsuarioSinEstablecerException, ViajeNoValidoException{
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         List<Viaje> viajesReservables = new ArrayList<>(this.viajesManager.findAll());
@@ -229,11 +246,16 @@ public class ViajesController {
             }
 
             if (indiceViaje == -1) {
-                GestorIO.print("El código ingresado no corresponde a un viaje existente. Por favor, inténtelo de nuevo.");
+                throw new ViajeNoValidoException();
             }
         }
 
         int numReservas = GestorIO.getInt("Introduzca el número de plazas a reservar", 1, viajesReservables.get(indiceViaje).getPlazasDisponibles());
+        
+        if(LocalDateTime.now().isAfter(viaje.getFecha())){
+            GestorIO.print("El viaje ya ha pasado");
+            return;
+        }
 
         Reserva reserva = this.reservaManager.crearReserva(usuario, numReservas);
 
@@ -243,10 +265,9 @@ public class ViajesController {
         (new ListadoReservasView(reserva)).visualizarReserva();
     }
 
-    public void modificarReserva() {
+    public void modificarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException{
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         List<Viaje> viajesDelUsuario = new ArrayList<>(this.viajesManager.findAll());
@@ -307,7 +328,7 @@ public class ViajesController {
             }
 
             if (indiceViaje == -1) {
-                GestorIO.print("El código ingresado no corresponde a una reserva. Por favor, inténtelo de nuevo.");
+                throw new ReservaNoValidaException();
             }
         }
 
@@ -316,10 +337,9 @@ public class ViajesController {
 
     }
 
-    public void cancelarReserva() {
+    public void cancelarReserva() throws UsuarioSinEstablecerException, ReservaNoValidaException{
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         List<Viaje> viajesDelUsuario = new ArrayList<>(this.viajesManager.findAll());
@@ -380,7 +400,7 @@ public class ViajesController {
             if (isCodigoValido) {
                 break;
             }
-            GestorIO.print("El código ingresado no corresponde a una reserva. Por favor, inténtelo de nuevo.");
+            throw new ReservaNoValidaException();
         }
 
         this.viajesManager.eliminarReserva(codigoViajeValido, codigoReservaValido);
@@ -388,10 +408,9 @@ public class ViajesController {
 
     }
 
-    public void buscarViajeYRealizarReserva() {
+    public void buscarViajeYRealizarReserva() throws UsuarioSinEstablecerException, ViajeNoValidoException{
         if (this.usuario == null) {
-            GestorIO.print("No se ha iniciado sesión");
-            return;
+            throw new UsuarioSinEstablecerException();
         }
 
         String ciudad = GestorIO.getString("Introduzca la ciudad a la que dese viajar");
@@ -453,11 +472,16 @@ public class ViajesController {
             }
 
             if (indiceViaje == -1) {
-                GestorIO.print("El código ingresado no corresponde a un viaje existente. Por favor, inténtelo de nuevo.");
+                throw new ViajeNoValidoException();
             }
         }
 
         int numReservas = GestorIO.getInt("Introduzca el número de plazas a reservar", 1, viajesConCiudadABuscar.get(indiceViaje).getPlazasDisponibles());
+        
+        if(LocalDateTime.now().isAfter(viaje.getFecha())){
+            GestorIO.print("El viaje ya ha pasado");
+            return;
+        }
 
         Reserva reserva = this.reservaManager.crearReserva(usuario, numReservas);
 
@@ -476,6 +500,24 @@ public class ViajesController {
         } else { 
             return cadena;
         }
+    }
+    
+    private static String pedirYValidarFechaHora() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime fechaHora = null;
+
+        while (fechaHora == null) {
+            String fechaStr = GestorIO.getString("Introduzca la fecha (Ej: 13-01-2024)");
+            String horaStr = GestorIO.getString("Introduzca la hora (Ej: 23:42)");
+            String fechaHoraStr = fechaStr + " " + horaStr;
+            try {
+                fechaHora = LocalDateTime.parse(fechaHoraStr, formatter);
+            } catch (DateTimeParseException e) {
+                GestorIO.print("Formato de fecha y hora incorrecto. Debe ser dd-MM-AAAA HH:mm");
+            }
+        }
+
+        return fechaHora.format(formatter);
     }
 
 }

@@ -5,7 +5,12 @@
 package es.progcipfpbatoi.menu.types;
 
 import es.progcipfpbatoi.controller.ViajesController;
+import es.progcipfpbatoi.exceptions.FechaPasadaException;
+import es.progcipfpbatoi.exceptions.UsuarioSinEstablecerException;
 import es.progcipfpbatoi.menu.Opcion;
+import es.progcipfpbatoi.views.GestorIO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,6 +25,12 @@ public class OpcionAnyadirViajes extends Opcion {
 
     @Override
     public void ejecutar() {
-        this.viajesController.anyadirViaje();
+        try {
+            this.viajesController.anyadirViaje();
+        } catch (UsuarioSinEstablecerException ex) {
+            GestorIO.print(ex.getMessage());
+        } catch (FechaPasadaException ex) {
+            GestorIO.print(ex.getMessage());
+        }
     }
 }

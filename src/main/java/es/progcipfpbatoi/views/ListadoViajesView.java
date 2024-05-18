@@ -25,11 +25,11 @@ public class ListadoViajesView {
 
         AsciiTable view = new AsciiTable();
         view.addRule();
-        view.addRow("*", "*", "*", "*", "*", "*", "*", "*");
+        view.addRow("*", "*", "*", "*", "*", "*", "*", "*","*");
         view.addRule();
-        view.addRow(null, null, null, null, null, null, null, "Listado Viajes");
+        view.addRow(null, null, null, null, null,null, null, null, "Listado Viajes");
         view.addRule();
-        view.addRow("Cod. Viaje", null, "Ruta", "Precio", "Propietario", "Tipo", "Plazas Disponibles", "Cancelado");
+        view.addRow("Cod. Viaje", null, "Ruta","Fecha salida", "Precio", "Propietario", "Tipo", "Plazas Disponibles", "Cancelado");
         view.addRule();
         generarFilasViajes(view);
         view.setTextAlignment(TextAlignment.CENTER);
@@ -51,9 +51,8 @@ public class ListadoViajesView {
 
     private void generarFilasViajes(AsciiTable tabla) {
         for (Viaje viaje : this.viajes) {
-        // Agregar una fila para cada viaje
-        tabla.addRow(viaje.getCodigo(), null, viaje.getRuta(), viaje.getPrecio(), (String)viaje.getUsernamePropietario(), viaje.getTIPO(), viaje.getPlazasDisponibles(), viaje.getIsCancelado()? "Sí" : "No");
-        tabla.addRule(); // Agregar una línea divisoria entre filas
+        tabla.addRow(viaje.getCodigo(), null, viaje.getRuta(),viaje.getFechaToString(), viaje.getPrecio(), (String)viaje.getUsernamePropietario(), viaje.getTIPO(), viaje.getPlazasDisponibles(), viaje.getIsCancelado()? "Sí" : "No");
+        tabla.addRule(); 
     }
 
     }
@@ -62,11 +61,11 @@ public class ListadoViajesView {
 
         AsciiTable view = new AsciiTable();
         view.addRule();
-        view.addRow("*", "*", "*", "*", "*");
+        view.addRow("*", "*", "*", "*", "*","*");
         view.addRule();
-        view.addRow(null, null, null, null, "Reservas de viajes");
+        view.addRow(null, null, null, null, null,"Reservas de viajes");
         view.addRule();
-        view.addRow("Cod. Reserva", "Cod. Viaje", "Propietario Viaje", null, "Plazas Reservadas");
+        view.addRow("Cod. Reserva", "Cod. Viaje", "Propietario Viaje", null, "Plazas Reservadas","fecha");
         view.addRule();
         generarFilasReservasViajes(view);
         view.setTextAlignment(TextAlignment.CENTER);
@@ -76,7 +75,7 @@ public class ListadoViajesView {
     private void generarFilasReservasViajes(AsciiTable view) {
         for (Viaje viaje : this.viajes){
             for(Reserva reserva: viaje.getReservas()){
-                view.addRow(reserva.getCodigo(),viaje.getCodigo(), viaje.getUsernamePropietario(), null, reserva.getPlazasSolicitadas());
+                view.addRow(reserva.getCodigo(),viaje.getCodigo(), viaje.getUsernamePropietario(), null, reserva.getPlazasSolicitadas(),reserva.getFechaToString());
                 view.addRule();
             }
         }

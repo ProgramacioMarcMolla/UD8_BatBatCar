@@ -3,6 +3,8 @@ package es.progcipfpbatoi.model.entities.types;
 import es.progcipfpbatoi.model.entities.Reserva;
 import es.progcipfpbatoi.model.entities.Usuario;
 import es.progcipfpbatoi.views.GestorIO;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -21,10 +23,11 @@ public class Viaje {
     protected boolean isCerrado;
     protected boolean isCancelado;
     protected ArrayList<Reserva> reservas;
+    protected LocalDateTime fechaSalida;
     
     protected final String TIPO = "Estándar";
     
-    public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio) {
+    public Viaje(Usuario propietario, String ruta, int duracion, int plazasOfertadas, double precio, String fecha) {
         this.propietario = propietario;
         this.ruta = ruta;
         this.duracion = duracion;
@@ -34,6 +37,9 @@ public class Viaje {
         this.isCerrado = false;
         this.isCancelado = false;
         this.reservas = new ArrayList<>();
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        this.fechaSalida = LocalDateTime.parse(fecha, formatter); 
     }
     
     public boolean getIsCancelado(){
@@ -136,6 +142,16 @@ public class Viaje {
         }
         
     }
+    
+    public LocalDateTime getFecha(){
+        return this.fechaSalida;
+    }
+    
+    public String getFechaToString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy 'a las' HH:mm");
+        return this.fechaSalida.format(formatter);
+    }
+
     
     
 }
